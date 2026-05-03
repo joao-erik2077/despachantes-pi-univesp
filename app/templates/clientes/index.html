@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}Clientes / Listagem{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Clientes Registrados</h2>
+        <a href="{{ url_for('home.cliente_novo') }}" class="btn btn-primary">
+            <i class="ph ph-plus" style="margin-right: 0.5rem;"></i>
+            Novo Cliente
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF/CNPJ</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td style="font-weight: 500;">{{ cliente.nome }}</td>
+                    <td>{{ cliente.cpf__cnpj }}</td>
+                    <td>{{ cliente.telefone }}</td>
+                    <td class="actions">
+                        <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum cliente cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

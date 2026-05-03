@@ -40,7 +40,7 @@ class Veiculo(db.Model):
     passageiros = db.Column(db.String(50), nullable=False)
     proprietario_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
 
-    processos = db.relationship('Processo', backref='cliente', lazy=True)
+    processos = db.relationship('Processo', backref='veiculo', lazy=True)
 
 class Processo(db.Model):
     __tablename__ = 'processo'

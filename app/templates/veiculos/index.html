@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}Veículos / Listagem{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Cadastro de Veículos</h2>
+        <a href="{{ url_for('home.veiculo_novo') }}" class="btn btn-primary">
+            <i class="ph ph-plus" style="margin-right: 0.5rem;"></i>
+            Novo Registro
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Placa</th>
+                    <th>Renavam</th>
+                    <th>Proprietário</th>
+                    <th>Modelo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for veiculo in veiculos %}
+                <tr>
+                    <td style="font-weight: 600;">{{ veiculo.placa }}</td>
+                    <td>{{ veiculo.renavam }}</td>
+                    <td>{{ veiculo.cliente.nome if veiculo.cliente else '-' }}</td>
+                    <td>{{ veiculo.marca__modelo }}</td>
+                    <td class="actions">
+                        <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
+                        <a href="#" class="btn btn-danger" style="padding: 0.25rem 0.5rem;"><i class="ph ph-trash"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum veículo cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

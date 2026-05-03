@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}Processos / Listagem{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Gerenciamento de Processos</h2>
+        <a href="{{ url_for('home.processo_novo') }}" class="btn btn-primary">
+            <i class="ph ph-plus" style="margin-right: 0.5rem;"></i>
+            Novo Processo
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Processo</th>
+                    <th>Veículo</th>
+                    <th>Cliente</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for processo in processos %}
+                <tr>
+                    <td>#{{ processo.id }}</td>
+                    <td>{{ processo.veiculo.placa if processo.veiculo else '-' }}</td>
+                    <td>{{ processo.cliente.nome if processo.cliente else '-' }}</td>
+                    <td><span class="badge badge-blue">Em Andamento</span></td>
+                    <td class="actions">
+                        <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-eye"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum processo cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
