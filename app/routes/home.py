@@ -7,7 +7,13 @@ bp = Blueprint('home', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
-    return render_template('index.html')
+    total_veiculos = Veiculo.query.count()
+    total_processos = Processo.query.count()
+    total_pendencias = 0 # Atualizar quando o modelo de pendências/status for criado
+    return render_template('index.html', 
+                           total_veiculos=total_veiculos, 
+                           total_processos=total_processos, 
+                           total_pendencias=total_pendencias)
 
 @bp.route('/clientes')
 def clientes():

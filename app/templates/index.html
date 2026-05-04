@@ -10,15 +10,15 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
         <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid var(--primary-color);">
             <div style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Total de Veículos</div>
-            <div style="font-size: 1.5rem; font-weight: 700;">--</div>
+            <div style="font-size: 1.5rem; font-weight: 700;">{{ total_veiculos }}</div>
         </div>
         <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid var(--success);">
-            <div style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Processos Finalizados</div>
-            <div style="font-size: 1.5rem; font-weight: 700;">--</div>
+            <div style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Total de Processos</div>
+            <div style="font-size: 1.5rem; font-weight: 700;">{{ total_processos }}</div>
         </div>
         <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid var(--danger);">
             <div style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Pendências Ativas</div>
-            <div style="font-size: 1.5rem; font-weight: 700;">--</div>
+            <div style="font-size: 1.5rem; font-weight: 700;">{{ total_pendencias }}</div>
         </div>
     </div>
 </div>
