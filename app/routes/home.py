@@ -9,7 +9,7 @@ bp = Blueprint('home', __name__, url_prefix='/')
 def index():
     total_veiculos = Veiculo.query.count()
     total_processos = Processo.query.count()
-    total_pendencias = 0 # Atualizar quando o modelo de pendências/status for criado
+    total_pendencias = Processo.query.filter_by(status='Pendente').count()
     return render_template('index.html', 
                            total_veiculos=total_veiculos, 
                            total_processos=total_processos, 
@@ -186,3 +186,12 @@ def processo_editar(id):
     clientes = Cliente.query.all()
     veiculos = Veiculo.query.all()
     return render_template('processos/form.html', clientes=clientes, veiculos=veiculos, processo=processo)
+
+@bp.route('/processos/status/<int:id>', methods=['POST'])
+def processo_alterar_status(id):
+    processo = Processo.query.get_or_404(id)
+    novo_status = request.form.get('status')
+    if novo_status in ['Em Andamento', 'Pendente', 'Finalizado']:
+        processo.status = novo_status
+        db.session.commit()
+    return redirect(url_for('home.processos'))

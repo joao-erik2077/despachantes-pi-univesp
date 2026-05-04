@@ -29,7 +29,15 @@
                     <td>#{{ processo.id }}</td>
                     <td>{{ processo.veiculo.placa if processo.veiculo else '-' }}</td>
                     <td>{{ processo.cliente.nome if processo.cliente else '-' }}</td>
-                    <td><span class="badge badge-blue">Em Andamento</span></td>
+                    <td>
+                        <form action="{{ url_for('home.processo_alterar_status', id=processo.id) }}" method="POST" style="margin: 0;">
+                            <select name="status" onchange="this.form.submit()" class="form-control" style="padding: 0.25rem; font-size: 0.875rem; border-radius: 0.25rem; width: auto; display: inline-block; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color);">
+                                <option value="Em Andamento" {% if processo.status == 'Em Andamento' %}selected{% endif %}>Em Andamento</option>
+                                <option value="Pendente" {% if processo.status == 'Pendente' %}selected{% endif %}>Pendente</option>
+                                <option value="Finalizado" {% if processo.status == 'Finalizado' %}selected{% endif %}>Finalizado</option>
+                            </select>
+                        </form>
+                    </td>
                     <td class="actions">
                         <a href="{{ url_for('home.processo_editar', id=processo.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
                     </td>

@@ -47,6 +47,7 @@ class Processo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     veiculo_id = db.Column(db.Integer, db.ForeignKey('veiculo.id'))
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
+    status = db.Column(db.String(50), nullable=False, default='Em Andamento')
 
 class DocumentoDigitalizado(db.Model):
     __tablename__ = 'documento_digitalizado'
