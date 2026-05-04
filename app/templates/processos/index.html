@@ -38,8 +38,11 @@
                             </select>
                         </form>
                     </td>
-                    <td class="actions">
+                    <td class="actions" style="display: flex; gap: 0.5rem; align-items: center;">
                         <a href="{{ url_for('home.processo_editar', id=processo.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
+                        <form action="{{ url_for('home.processo_excluir', id=processo.id) }}" method="POST" style="margin: 0; display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este processo?');">
+                            <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem; border: none; cursor: pointer;"><i class="ph ph-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
                 {% else %}

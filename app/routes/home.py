@@ -195,3 +195,26 @@ def processo_alterar_status(id):
         processo.status = novo_status
         db.session.commit()
     return redirect(url_for('home.processos'))
+
+@bp.route('/clientes/excluir/<int:id>', methods=['POST'])
+def cliente_excluir(id):
+    cliente = Cliente.query.get_or_404(id)
+    if cliente.endereco:
+        db.session.delete(cliente.endereco)
+    db.session.delete(cliente)
+    db.session.commit()
+    return redirect(url_for('home.clientes'))
+
+@bp.route('/veiculos/excluir/<int:id>', methods=['POST'])
+def veiculo_excluir(id):
+    veiculo = Veiculo.query.get_or_404(id)
+    db.session.delete(veiculo)
+    db.session.commit()
+    return redirect(url_for('home.veiculos'))
+
+@bp.route('/processos/excluir/<int:id>', methods=['POST'])
+def processo_excluir(id):
+    processo = Processo.query.get_or_404(id)
+    db.session.delete(processo)
+    db.session.commit()
+    return redirect(url_for('home.processos'))
