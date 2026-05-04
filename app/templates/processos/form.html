@@ -8,7 +8,7 @@
         <div style="display: flex; align-items: center; gap: 1rem;">
             <i class="ph ph-folder-open" style="font-size: 2rem; color: var(--primary-color);"></i>
             <div>
-                <h2 class="card-title" style="margin-bottom: 0; color: #1e293b;">Novo Processo</h2>
+                <h2 class="card-title" style="margin-bottom: 0; color: #1e293b;">{{ 'Editar Processo' if processo else 'Novo Processo' }}</h2>
                 <span style="font-size: 0.8rem; color: var(--text-muted);">Abertura de serviço para um cliente/veículo</span>
             </div>
         </div>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <form id="processoForm" action="{{ url_for('home.processo_novo') }}" method="POST">
+    <form id="processoForm" action="{{ url_for('home.processo_editar', id=processo.id) if processo else url_for('home.processo_novo') }}" method="POST">
         <h3 style="font-size: 1rem; color: var(--text-main); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Vínculos do Processo</h3>
         <div class="form-grid">
             <div class="form-group">
@@ -26,7 +26,7 @@
                 <select class="form-control" name="cliente_id">
                     <option value="">-- Selecione o Cliente --</option>
                     {% for cliente in clientes %}
-                    <option value="{{ cliente.id }}">{{ cliente.nome }} - {{ cliente.cpf__cnpj }}</option>
+                    <option value="{{ cliente.id }}" {% if processo and processo.cliente_id == cliente.id %}selected{% endif %}>{{ cliente.nome }} - {{ cliente.cpf__cnpj }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -35,14 +35,12 @@
                 <select class="form-control" name="veiculo_id">
                     <option value="">-- Selecione o Veículo --</option>
                     {% for veiculo in veiculos %}
-                    <option value="{{ veiculo.id }}">{{ veiculo.placa }} - {{ veiculo.marca__modelo }}</option>
+                    <option value="{{ veiculo.id }}" {% if processo and processo.veiculo_id == veiculo.id %}selected{% endif %}>{{ veiculo.placa }} - {{ veiculo.marca__modelo }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
 
-        <!-- Atualmente o modelo Processo possui apenas veiculo_id e cliente_id, mas a UI precisaria de mais dados.
-             Para o modelo atual, isto é suficiente. -->
     </form>
 </div>
 {% endblock %}

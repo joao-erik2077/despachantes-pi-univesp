@@ -31,7 +31,7 @@
                     <td>{{ processo.cliente.nome if processo.cliente else '-' }}</td>
                     <td><span class="badge badge-blue">Em Andamento</span></td>
                     <td class="actions">
-                        <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-eye"></i></a>
+                        <a href="{{ url_for('home.processo_editar', id=processo.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
                     </td>
                 </tr>
                 {% else %}

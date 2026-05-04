@@ -29,7 +29,7 @@
                     <td>{{ cliente.cpf__cnpj }}</td>
                     <td>{{ cliente.telefone }}</td>
                     <td class="actions">
-                        <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
+                        <a href="{{ url_for('home.cliente_editar', id=cliente.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
                     </td>
                 </tr>
                 {% else %}
