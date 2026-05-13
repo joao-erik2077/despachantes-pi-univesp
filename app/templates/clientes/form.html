@@ -100,4 +100,59 @@
         </fieldset>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cepInput = document.querySelector('input[name="cep"]');
+    const logradouroInput = document.querySelector('input[name="logradouro"]');
+    const bairroInput = document.querySelector('input[name="bairro"]');
+    const municipioInput = document.querySelector('input[name="municipio"]');
+    const ufInput = document.querySelector('input[name="unidade_federacao"]');
+
+    if (cepInput) {
+        cepInput.addEventListener('blur', function() {
+            let cep = cepInput.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                // Opcional: mostrar algum feedback visual de carregamento
+                logradouroInput.value = 'Buscando...';
+                bairroInput.value = 'Buscando...';
+                municipioInput.value = 'Buscando...';
+                ufInput.value = 'Buscando...';
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            logradouroInput.value = data.logradouro || '';
+                            bairroInput.value = data.bairro || '';
+                            municipioInput.value = data.localidade || '';
+                            ufInput.value = data.uf || '';
+                            
+                            // Foca no número para continuar o preenchimento
+                            const numeroInput = document.querySelector('input[name="numero"]');
+                            if(numeroInput) numeroInput.focus();
+                        } else {
+                            alert('CEP não encontrado.');
+                            limparCampos();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar o CEP:', error);
+                        alert('Erro ao buscar o CEP.');
+                        limparCampos();
+                    });
+            } else {
+                limparCampos();
+            }
+        });
+    }
+
+    function limparCampos() {
+        logradouroInput.value = '';
+        bairroInput.value = '';
+        municipioInput.value = '';
+        ufInput.value = '';
+    }
+});
+</script>
 {% endblock %}
