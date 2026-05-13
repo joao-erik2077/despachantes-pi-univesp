@@ -14,10 +14,12 @@
             </div>
         </div>
         <div style="display: flex; gap: 0.5rem;">
+            {% if not visualizar %}
             <button type="submit" form="veiculoForm" class="btn btn-secondary"><i class="ph ph-floppy-disk"
                     style="margin-right: 0.5rem;"></i>Salvar</button>
+            {% endif %}
             <a href="{{ url_for('home.veiculos') }}" class="btn btn-danger"><i class="ph ph-x"
-                    style="margin-right: 0.5rem;"></i>Cancelar</a>
+                    style="margin-right: 0.5rem;"></i>{% if visualizar %}Voltar{% else %}Cancelar{% endif %}</a>
         </div>
     </div>
 
@@ -34,6 +36,7 @@
     </div>
 
     <form id="veiculoForm" action="{{ url_for('home.veiculo_editar', id=veiculo.id) if veiculo else url_for('home.veiculo_novo') }}" method="POST">
+        <fieldset {% if visualizar %}disabled{% endif %} style="border: none; padding: 0; margin: 0;">
         <!-- Tab 1: Proprietário -->
         <div id="tab-proprietario" class="tab-content active">
             <h3
@@ -329,6 +332,7 @@
                 </tbody>
             </table>
         </div>
+        </fieldset>
     </form>
 </div>
 

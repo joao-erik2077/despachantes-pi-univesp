@@ -13,12 +13,15 @@
             </div>
         </div>
         <div style="display: flex; gap: 0.5rem;">
+            {% if not visualizar %}
             <button type="submit" form="processoForm" class="btn btn-secondary"><i class="ph ph-floppy-disk" style="margin-right: 0.5rem;"></i>Salvar</button>
-            <a href="{{ url_for('home.processos') }}" class="btn btn-danger"><i class="ph ph-x" style="margin-right: 0.5rem;"></i>Cancelar</a>
+            {% endif %}
+            <a href="{{ url_for('home.processos') }}" class="btn btn-danger"><i class="ph ph-x" style="margin-right: 0.5rem;"></i>{% if visualizar %}Voltar{% else %}Cancelar{% endif %}</a>
         </div>
     </div>
 
     <form id="processoForm" action="{{ url_for('home.processo_editar', id=processo.id) if processo else url_for('home.processo_novo') }}" method="POST">
+        <fieldset {% if visualizar %}disabled{% endif %} style="border: none; padding: 0; margin: 0;">
         <h3 style="font-size: 1rem; color: var(--text-main); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Vínculos do Processo</h3>
         <div class="form-grid">
             <div class="form-group">
@@ -57,6 +60,7 @@
             </div>
         </div>
 
+        </fieldset>
     </form>
 </div>
 {% endblock %}

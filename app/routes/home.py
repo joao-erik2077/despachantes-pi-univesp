@@ -120,6 +120,11 @@ def cliente_editar(id):
         
     return render_template('clientes/form.html', cliente=cliente)
 
+@bp.route('/clientes/visualizar/<int:id>')
+def cliente_visualizar(id):
+    cliente = Cliente.query.get_or_404(id)
+    return render_template('clientes/form.html', cliente=cliente, visualizar=True)
+
 def _salvar_ou_atualizar_cliente(form):
     cliente_nome = form.get('cliente_nome')
     if not cliente_nome:
@@ -248,6 +253,11 @@ def veiculo_editar(id):
         
     return render_template('veiculos/form.html', veiculo=veiculo)
 
+@bp.route('/veiculos/visualizar/<int:id>')
+def veiculo_visualizar(id):
+    veiculo = Veiculo.query.get_or_404(id)
+    return render_template('veiculos/form.html', veiculo=veiculo, visualizar=True)
+
 @bp.route('/processos')
 def processos():
     processos = Processo.query.all()
@@ -296,6 +306,13 @@ def processo_editar(id):
     clientes = Cliente.query.all()
     veiculos = Veiculo.query.all()
     return render_template('processos/form.html', clientes=clientes, veiculos=veiculos, processo=processo)
+
+@bp.route('/processos/visualizar/<int:id>')
+def processo_visualizar(id):
+    processo = Processo.query.get_or_404(id)
+    clientes = Cliente.query.all()
+    veiculos = Veiculo.query.all()
+    return render_template('processos/form.html', clientes=clientes, veiculos=veiculos, processo=processo, visualizar=True)
 
 @bp.route('/processos/status/<int:id>', methods=['POST'])
 def processo_alterar_status(id):

@@ -13,12 +13,15 @@
             </div>
         </div>
         <div style="display: flex; gap: 0.5rem;">
+            {% if not visualizar %}
             <button type="submit" form="clienteForm" class="btn btn-secondary"><i class="ph ph-floppy-disk" style="margin-right: 0.5rem;"></i>Salvar</button>
-            <a href="{{ url_for('home.clientes') }}" class="btn btn-danger"><i class="ph ph-x" style="margin-right: 0.5rem;"></i>Cancelar</a>
+            {% endif %}
+            <a href="{{ url_for('home.clientes') }}" class="btn btn-danger"><i class="ph ph-x" style="margin-right: 0.5rem;"></i>{% if visualizar %}Voltar{% else %}Cancelar{% endif %}</a>
         </div>
     </div>
 
     <form id="clienteForm" action="{{ url_for('home.cliente_editar', id=cliente.id) if cliente else url_for('home.cliente_novo') }}" method="POST">
+        <fieldset {% if visualizar %}disabled{% endif %} style="border: none; padding: 0; margin: 0;">
         <h3 style="font-size: 1rem; color: var(--text-main); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Dados Pessoais</h3>
         <div class="form-grid">
             <div class="form-group" style="grid-column: span 2;">
@@ -94,6 +97,7 @@
                 <input type="text" class="form-control" name="pais" value="{{ cliente.endereco.pais if cliente and cliente.endereco else 'Brasil' }}" required>
             </div>
         </div>
+        </fieldset>
     </form>
 </div>
 {% endblock %}
