@@ -256,9 +256,17 @@ def processos():
 @bp.route('/processos/novo', methods=['GET', 'POST'])
 def processo_novo():
     if request.method == 'POST':
+        def parse_date(d_str):
+            if not d_str: return None
+            try: return datetime.strptime(d_str, '%Y-%m-%d').date()
+            except: return None
+            
         processo = Processo(
             cliente_id=request.form.get('cliente_id') or None,
-            veiculo_id=request.form.get('veiculo_id') or None
+            veiculo_id=request.form.get('veiculo_id') or None,
+            descricao=request.form.get('descricao', ''),
+            data_inicio=parse_date(request.form.get('data_inicio')),
+            data_solucionado=parse_date(request.form.get('data_solucionado'))
         )
         db.session.add(processo)
         db.session.commit()
@@ -272,8 +280,16 @@ def processo_novo():
 def processo_editar(id):
     processo = Processo.query.get_or_404(id)
     if request.method == 'POST':
+        def parse_date(d_str):
+            if not d_str: return None
+            try: return datetime.strptime(d_str, '%Y-%m-%d').date()
+            except: return None
+
         processo.cliente_id = request.form.get('cliente_id') or None
         processo.veiculo_id = request.form.get('veiculo_id') or None
+        processo.descricao = request.form.get('descricao', '')
+        processo.data_inicio = parse_date(request.form.get('data_inicio'))
+        processo.data_solucionado = parse_date(request.form.get('data_solucionado'))
         db.session.commit()
         return redirect(url_for('home.processos'))
         

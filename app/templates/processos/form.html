@@ -41,6 +41,22 @@
             </div>
         </div>
 
+        <h3 style="font-size: 1rem; color: var(--text-main); margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Detalhes do Processo</h3>
+        <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label">Descrição / Observações</label>
+                <textarea class="form-control" name="descricao" rows="4">{{ processo.descricao if processo else '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Data Início</label>
+                <input type="date" class="form-control" name="data_inicio" value="{{ processo.data_inicio.strftime('%Y-%m-%d') if processo and processo.data_inicio else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Data Solucionado</label>
+                <input type="date" class="form-control" name="data_solucionado" value="{{ processo.data_solucionado.strftime('%Y-%m-%d') if processo and processo.data_solucionado else '' }}">
+            </div>
+        </div>
+
     </form>
 </div>
 {% endblock %}
