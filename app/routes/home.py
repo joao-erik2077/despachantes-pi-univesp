@@ -1,9 +1,38 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.models import db, Cliente, Veiculo, Processo, Endereco
 
 from datetime import datetime
 
 bp = Blueprint('home', __name__, url_prefix='/')
+
+@bp.route('/api/clientes/buscar')
+def api_clientes_buscar():
+    nome = request.args.get('nome', '')
+    if not nome or len(nome) < 3:
+        return jsonify([])
+        
+    clientes = Cliente.query.filter(Cliente.nome.ilike(f'%{nome}%')).limit(10).all()
+    resultado = []
+    for c in clientes:
+        resultado.append({
+            'id': c.id,
+            'nome': c.nome,
+            'cpf_cnpj': c.cpf__cnpj,
+            'rg': c.rg,
+            'data_nascimento': c.data_nascimento.strftime('%Y-%m-%d') if c.data_nascimento else '',
+            'vencimento_cnh': c.vencimento_cnh.strftime('%Y-%m-%d') if c.vencimento_cnh else '',
+            'email': c.email,
+            'telefone': c.telefone,
+            'nome_pai': c.nome_pai,
+            'nome_mae': c.nome_mae,
+            'cep': c.endereco.cep if c.endereco else '',
+            'logradouro': c.endereco.logradouro if c.endereco else '',
+            'numero': c.endereco.numero if c.endereco else '',
+            'bairro': c.endereco.bairro if c.endereco else '',
+            'municipio': c.endereco.municipio if c.endereco else '',
+            'unidade_federacao': c.endereco.unidade_federacao if c.endereco else ''
+        })
+    return jsonify(resultado)
 
 @bp.route('/')
 def index():
@@ -91,6 +120,69 @@ def cliente_editar(id):
         
     return render_template('clientes/form.html', cliente=cliente)
 
+def _salvar_ou_atualizar_cliente(form):
+    cliente_nome = form.get('cliente_nome')
+    if not cliente_nome:
+        return None
+
+    def parse_date(d_str):
+        if not d_str: return datetime.now().date()
+        try: return datetime.strptime(d_str, '%Y-%m-%d').date()
+        except: return datetime.now().date()
+
+    cliente = Cliente.query.filter_by(nome=cliente_nome).first()
+    
+    if not cliente:
+        endereco = Endereco(
+            cep=form.get('endereco_cep', ''),
+            logradouro=form.get('endereco_logradouro', ''),
+            numero=form.get('endereco_numero', ''),
+            bairro=form.get('endereco_bairro', ''),
+            municipio=form.get('endereco_municipio', ''),
+            unidade_federacao=form.get('endereco_uf', ''),
+            pais='Brasil'
+        )
+        db.session.add(endereco)
+        db.session.flush()
+
+        cliente = Cliente(
+            nome=cliente_nome,
+            cpf__cnpj=form.get('cliente_cpf_cnpj', ''),
+            rg=form.get('cliente_rg', ''),
+            data_nascimento=parse_date(form.get('cliente_nascimento')),
+            vencimento_cnh=parse_date(form.get('cliente_vencimento_cnh')),
+            email=form.get('cliente_email', ''),
+            telefone=form.get('cliente_telefone', ''),
+            nome_pai=form.get('cliente_pai', ''),
+            nome_mae=form.get('cliente_mae', ''),
+            endereco_id=endereco.id
+        )
+        db.session.add(cliente)
+        db.session.flush()
+    else:
+        cliente.cpf__cnpj = form.get('cliente_cpf_cnpj', cliente.cpf__cnpj)
+        cliente.rg = form.get('cliente_rg', cliente.rg)
+        cliente.data_nascimento = parse_date(form.get('cliente_nascimento'))
+        cliente.vencimento_cnh = parse_date(form.get('cliente_vencimento_cnh'))
+        cliente.email = form.get('cliente_email', cliente.email)
+        cliente.telefone = form.get('cliente_telefone', cliente.telefone)
+        cliente.nome_pai = form.get('cliente_pai', cliente.nome_pai)
+        cliente.nome_mae = form.get('cliente_mae', cliente.nome_mae)
+        
+        if not cliente.endereco:
+            cliente.endereco = Endereco(pais='Brasil')
+            db.session.add(cliente.endereco)
+            db.session.flush()
+
+        cliente.endereco.cep = form.get('endereco_cep', cliente.endereco.cep)
+        cliente.endereco.logradouro = form.get('endereco_logradouro', cliente.endereco.logradouro)
+        cliente.endereco.numero = form.get('endereco_numero', cliente.endereco.numero)
+        cliente.endereco.bairro = form.get('endereco_bairro', cliente.endereco.bairro)
+        cliente.endereco.municipio = form.get('endereco_municipio', cliente.endereco.municipio)
+        cliente.endereco.unidade_federacao = form.get('endereco_uf', cliente.endereco.unidade_federacao)
+        
+    return cliente.id
+
 @bp.route('/veiculos')
 def veiculos():
     veiculos = Veiculo.query.all()
@@ -118,7 +210,8 @@ def veiculo_novo():
             passageiros=request.form.get('veiculo_passageiros', ''),
             placa_anterior=request.form.get('veiculo_placa_anterior', ''),
             proprietario_anterior=request.form.get('veiculo_proprietario_anterior', ''),
-            cpf__cnpj_anterior=request.form.get('veiculo_cpf_cnpj_anterior', '')
+            cpf__cnpj_anterior=request.form.get('veiculo_cpf_cnpj_anterior', ''),
+            proprietario_id=_salvar_ou_atualizar_cliente(request.form)
         )
         db.session.add(veiculo)
         db.session.commit()
@@ -148,6 +241,7 @@ def veiculo_editar(id):
         veiculo.placa_anterior = request.form.get('veiculo_placa_anterior', '')
         veiculo.proprietario_anterior = request.form.get('veiculo_proprietario_anterior', '')
         veiculo.cpf__cnpj_anterior = request.form.get('veiculo_cpf_cnpj_anterior', '')
+        veiculo.proprietario_id = _salvar_ou_atualizar_cliente(request.form)
         
         db.session.commit()
         return redirect(url_for('home.veiculos'))

@@ -331,4 +331,74 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputNome = document.querySelector('input[name="cliente_nome"]');
+    if (!inputNome) return;
+
+    const datalist = document.createElement('datalist');
+    datalist.id = 'clientes_list';
+    inputNome.parentNode.appendChild(datalist);
+    inputNome.setAttribute('list', 'clientes_list');
+    inputNome.setAttribute('autocomplete', 'off');
+
+    let debounceTimer;
+    let currentClientes = [];
+
+    inputNome.addEventListener('input', function(e) {
+        clearTimeout(debounceTimer);
+        const val = e.target.value;
+        
+        const matchedClient = currentClientes.find(c => c.nome.toLowerCase() === val.toLowerCase());
+        if (matchedClient) {
+            preencherCampos(matchedClient);
+            return;
+        }
+
+        if (val.length < 3) return;
+
+        debounceTimer = setTimeout(() => {
+            fetch(`/api/clientes/buscar?nome=${encodeURIComponent(val)}`)
+                .then(res => res.json())
+                .then(data => {
+                    currentClientes = data;
+                    datalist.innerHTML = '';
+                    data.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.nome;
+                        datalist.appendChild(option);
+                    });
+                    
+                    if (data.length === 1 && data[0].nome.toLowerCase() === val.toLowerCase()) {
+                        preencherCampos(data[0]);
+                    }
+                });
+        }, 500);
+    });
+
+    function preencherCampos(cliente) {
+        const setVal = (name, val) => {
+            const el = document.querySelector(`input[name="${name}"]`);
+            if (el && val !== undefined && val !== null) el.value = val;
+        };
+        
+        setVal('cliente_cpf_cnpj', cliente.cpf_cnpj);
+        setVal('cliente_rg', cliente.rg);
+        setVal('cliente_nascimento', cliente.data_nascimento);
+        setVal('cliente_vencimento_cnh', cliente.vencimento_cnh);
+        setVal('cliente_email', cliente.email);
+        setVal('cliente_telefone', cliente.telefone);
+        setVal('cliente_pai', cliente.nome_pai);
+        setVal('cliente_mae', cliente.nome_mae);
+        
+        setVal('endereco_cep', cliente.cep);
+        setVal('endereco_logradouro', cliente.logradouro);
+        setVal('endereco_numero', cliente.numero);
+        setVal('endereco_bairro', cliente.bairro);
+        setVal('endereco_municipio', cliente.municipio);
+        setVal('endereco_uf', cliente.unidade_federacao);
+    }
+});
+</script>
 {% endblock %}
