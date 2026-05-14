@@ -294,16 +294,58 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>HONORÁRIOS</td>
-                                <td>R$ 150,00</td>
-                                <td>R$ 0,00</td>
-                                <td>20/10/2023</td>
+                                <td style="vertical-align: middle; font-weight: 500;">HONORÁRIOS</td>
+                                <td>
+                                    <div
+                                        style="position: relative; display: flex; align-items: center; max-width: 150px;">
+                                        <span
+                                            style="position: absolute; left: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">R$</span>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="custo_honorarios_cobrado" value="0.00"
+                                            style="padding-left: 2.2rem; width: 100%;">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div
+                                        style="position: relative; display: flex; align-items: center; max-width: 150px;">
+                                        <span
+                                            style="position: absolute; left: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">R$</span>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="custo_honorarios_custo" value="0.00"
+                                            style="padding-left: 2.2rem; width: 100%;">
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" name="custo_honorarios_data"
+                                        style="max-width: 160px;">
+                                </td>
                             </tr>
                             <tr>
-                                <td>TAXA DETRAN</td>
-                                <td>R$ 246,17</td>
-                                <td>R$ 246,17</td>
-                                <td>20/10/2023</td>
+                                <td style="vertical-align: middle; font-weight: 500;">TAXA DETRAN</td>
+                                <td>
+                                    <div
+                                        style="position: relative; display: flex; align-items: center; max-width: 150px;">
+                                        <span
+                                            style="position: absolute; left: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">R$</span>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="custo_taxa_detran_cobrado" value="0.00"
+                                            style="padding-left: 2.2rem; width: 100%;">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div
+                                        style="position: relative; display: flex; align-items: center; max-width: 150px;">
+                                        <span
+                                            style="position: absolute; left: 0.75rem; color: var(--text-muted); font-size: 0.9rem;">R$</span>
+                                        <input type="number" step="0.01" class="form-control"
+                                            name="custo_taxa_detran_custo" value="0.00"
+                                            style="padding-left: 2.2rem; width: 100%;">
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" name="custo_taxa_detran_data"
+                                        style="max-width: 160px;">
+                                </td>
                             </tr>
                         </tbody>
                     </table>
