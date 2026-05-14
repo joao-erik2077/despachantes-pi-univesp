@@ -228,7 +228,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Data Inicio</label>
-                    <input type="date" class="form-control">
+                    <input type="date" class="form-control" id="dataInicio" name="data_inicio">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Processo Número</label>
@@ -307,7 +307,7 @@
                     </div>
                     <div class="form-group mt-4">
                         <label class="form-label">Vencimento da Fase</label>
-                        <input type="date" class="form-control">
+                        <input type="date" class="form-control" id="vencimentoFase" name="vencimento_fase">
                     </div>
                 </div>
             </div>
@@ -402,6 +402,33 @@ document.addEventListener('DOMContentLoaded', function() {
         setVal('endereco_bairro', cliente.bairro);
         setVal('endereco_municipio', cliente.municipio);
         setVal('endereco_uf', cliente.unidade_federacao);
+    }
+
+    // Lógica para cálculo automático de vencimento (Data Inicio + 29 dias corridos)
+    const inputDataInicio = document.getElementById('dataInicio');
+    const inputVencimentoFase = document.getElementById('vencimentoFase');
+
+    if (inputDataInicio && inputVencimentoFase) {
+        inputDataInicio.addEventListener('change', function() {
+            if (!this.value) {
+                inputVencimentoFase.value = '';
+                return;
+            }
+            
+            // Extrai as partes para criar uma data local segura (evita problema de timezone)
+            const partes = this.value.split('-');
+            const dataInicial = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
+            
+            // Adiciona 29 dias, pois o dia da data inicial já conta como o 1º dia dos 30
+            dataInicial.setDate(dataInicial.getDate() + 29);
+            
+            // Formata para o input type="date" (YYYY-MM-DD)
+            const ano = dataInicial.getFullYear();
+            const mes = String(dataInicial.getMonth() + 1).padStart(2, '0');
+            const dia = String(dataInicial.getDate()).padStart(2, '0');
+            
+            inputVencimentoFase.value = `${ano}-${mes}-${dia}`;
+        });
     }
 });
 </script>
