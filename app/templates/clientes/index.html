@@ -31,7 +31,7 @@
                     <td class="actions" style="display: flex; gap: 0.5rem;">
                         <a href="{{ url_for('home.cliente_visualizar', id=cliente.id) }}" class="btn btn-info" style="padding: 0.25rem 0.5rem; background-color: #0ea5e9; color: white; border: none; border-radius: 0.25rem; text-decoration: none;"><i class="ph ph-eye"></i></a>
                         <a href="{{ url_for('home.cliente_editar', id=cliente.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil-simple"></i></a>
-                        <form action="{{ url_for('home.cliente_excluir', id=cliente.id) }}" method="POST" style="margin: 0; display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este cliente? Isso pode afetar veículos e processos vinculados.');">
+                        <form action="{{ url_for('home.cliente_excluir', id=cliente.id) }}" method="POST" style="margin: 0; display: inline;" onsubmit="event.preventDefault(); confirmDelete(this, 'Tem certeza que deseja excluir este cliente? Isso pode afetar veículos e processos vinculados.');">
                             <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem; border: none; cursor: pointer;"><i class="ph ph-trash"></i></button>
                         </form>
                     </td>

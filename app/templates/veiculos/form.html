@@ -520,7 +520,7 @@
                             <div style="display: flex; gap: 0.5rem;">
                                 <a href="{{ url_for('home.download_documento', doc_id=doc.id) }}" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;"><i class="ph ph-download" style="margin-right: 0.25rem;"></i> Baixar</a>
                                 {% if not visualizar %}
-                                <a href="{{ url_for('home.excluir_documento', doc_id=doc.id) }}" class="btn btn-danger" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" onclick="return confirm('Tem certeza que deseja excluir este documento?');"><i class="ph ph-trash" style="margin-right: 0.25rem;"></i> Excluir</a>
+                                <a href="{{ url_for('home.excluir_documento', doc_id=doc.id) }}" class="btn btn-danger" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" onclick="event.preventDefault(); confirmDelete(this, 'Tem certeza que deseja excluir este documento?');"><i class="ph ph-trash" style="margin-right: 0.25rem;"></i> Excluir</a>
                                 {% endif %}
                             </div>
                         </div>
