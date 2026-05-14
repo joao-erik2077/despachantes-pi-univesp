@@ -41,6 +41,7 @@ class Veiculo(db.Model):
     proprietario_id = db.Column(db.Integer, db.ForeignKey('cliente.id'))
 
     processos = db.relationship('Processo', backref='veiculo', lazy=True)
+    documentos = db.relationship('DocumentoDigitalizado', backref='veiculo', lazy=True, cascade='all, delete-orphan')
 
 class Processo(db.Model):
     __tablename__ = 'processo'
@@ -55,6 +56,10 @@ class Processo(db.Model):
 class DocumentoDigitalizado(db.Model):
     __tablename__ = 'documento_digitalizado'
     id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(255), nullable=False)
+    dados = db.Column(db.LargeBinary, nullable=False)
+    mimetype = db.Column(db.String(100), nullable=False)
+    veiculo_id = db.Column(db.Integer, db.ForeignKey('veiculo.id'))
 
 class Endereco(db.Model):
     __tablename__ = 'endereco'

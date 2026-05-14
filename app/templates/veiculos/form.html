@@ -41,7 +41,7 @@
 
     <form id="veiculoForm"
         action="{{ url_for('home.veiculo_editar', id=veiculo.id) if veiculo else url_for('home.veiculo_novo') }}"
-        method="POST">
+        method="POST" enctype="multipart/form-data">
         <fieldset {% if visualizar %}disabled{% endif %} style="border: none; padding: 0; margin: 0;">
             <!-- Tab 1: Proprietário -->
             <div id="tab-proprietario" class="tab-content active">
@@ -478,6 +478,56 @@
                     <textarea class="form-control" rows="3" name="doc_observacoes"
                         placeholder="Adicione alguma observação sobre a entrega ou pendência de documentos..."></textarea>
                 </div>
+
+                <div style="border-top: 1px solid var(--border-color); margin-top: 2rem; padding-top: 2rem;">
+                    <h4 style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; font-weight: 600;">
+                        Upload de Documentos (PDF)</h4>
+                    
+                    <div id="documentos-upload-container" style="margin-bottom: 1rem;">
+                        <div class="documento-upload-row" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <label class="form-label">Nome do Documento</label>
+                                <input type="text" class="form-control" name="documentos_nomes" placeholder="Ex: CNH, Recibo de Venda" {% if visualizar %}disabled{% endif %}>
+                            </div>
+                            <div style="flex: 2;">
+                                <label class="form-label">Arquivo PDF</label>
+                                <input type="file" class="form-control" name="documentos_arquivos" accept=".pdf" style="padding: 0.5rem; background-color: #f8fafc;" {% if visualizar %}disabled{% endif %}>
+                            </div>
+                            {% if not visualizar %}
+                            <div style="width: 42px;">
+                                <!-- Espaço reservado para o botão de excluir que aparecerá nas linhas extras -->
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if not visualizar %}
+                    <div style="margin-bottom: 2rem;">
+                        <button type="button" class="btn btn-outline" onclick="adicionarCampoDocumento()" style="width: 100%; padding: 0.75rem; border: 1px dashed var(--border-color); background-color: transparent; color: var(--text-muted); border-radius: 0.5rem; transition: all 0.2s; cursor: pointer;">
+                            <i class="ph ph-plus" style="margin-right: 0.5rem;"></i> Adicionar campo para outro arquivo
+                        </button>
+                    </div>
+                    {% endif %}
+
+                    {% if veiculo and veiculo.documentos %}
+                    <h4 style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; font-weight: 600;">Documentos Salvos</h4>
+                    <div style="display: grid; gap: 0.5rem;">
+                        {% for doc in veiculo.documentos %}
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background-color: #fff;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="ph ph-file-pdf" style="color: #ef4444; font-size: 1.25rem;"></i>
+                                <span style="font-weight: 500;">{{ doc.nome }}</span>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="{{ url_for('home.download_documento', doc_id=doc.id) }}" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;"><i class="ph ph-download" style="margin-right: 0.25rem;"></i> Baixar</a>
+                                {% if not visualizar %}
+                                <a href="{{ url_for('home.excluir_documento', doc_id=doc.id) }}" class="btn btn-danger" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" onclick="return confirm('Tem certeza que deseja excluir este documento?');"><i class="ph ph-trash" style="margin-right: 0.25rem;"></i> Excluir</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </fieldset>
     </form>
@@ -578,5 +628,26 @@
             });
         }
     });
+
+    function adicionarCampoDocumento() {
+        const container = document.getElementById('documentos-upload-container');
+        const row = document.createElement('div');
+        row.className = 'documento-upload-row';
+        row.style = 'display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-end;';
+        row.innerHTML = `
+            <div style="flex: 1;">
+                <label class="form-label">Nome do Documento</label>
+                <input type="text" class="form-control" name="documentos_nomes" placeholder="Ex: CNH, Recibo de Venda">
+            </div>
+            <div style="flex: 2;">
+                <label class="form-label">Arquivo PDF</label>
+                <input type="file" class="form-control" name="documentos_arquivos" accept=".pdf" style="padding: 0.5rem; background-color: #f8fafc;">
+            </div>
+            <div style="width: 42px;">
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove()" style="padding: 0.5rem 0; width: 100%; display: flex; justify-content: center;" title="Remover este documento"><i class="ph ph-trash"></i></button>
+            </div>
+        `;
+        container.appendChild(row);
+    }
 </script>
 {% endblock %}

@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
-from app.models import db, Cliente, Veiculo, Processo, Endereco
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
+from werkzeug.utils import secure_filename
+from app.models import db, Cliente, Veiculo, Processo, Endereco, DocumentoDigitalizado
+import io
 
 from datetime import datetime
 
@@ -219,6 +221,21 @@ def veiculo_novo():
             proprietario_id=_salvar_ou_atualizar_cliente(request.form)
         )
         db.session.add(veiculo)
+        db.session.flush() # Para gerar o id do veículo
+        
+        nomes = request.form.getlist('documentos_nomes')
+        arquivos = request.files.getlist('documentos_arquivos')
+        for nome, file in zip(nomes, arquivos):
+            if file and file.filename.lower().endswith('.pdf'):
+                doc_nome = nome.strip() if nome and nome.strip() else secure_filename(file.filename)
+                doc = DocumentoDigitalizado(
+                    nome=doc_nome,
+                    dados=file.read(),
+                    mimetype=file.mimetype,
+                    veiculo_id=veiculo.id
+                )
+                db.session.add(doc)
+                
         db.session.commit()
         return redirect(url_for('home.veiculos'))
         
@@ -247,9 +264,21 @@ def veiculo_editar(id):
         veiculo.proprietario_anterior = request.form.get('veiculo_proprietario_anterior', '')
         veiculo.cpf__cnpj_anterior = request.form.get('veiculo_cpf_cnpj_anterior', '')
         veiculo.proprietario_id = _salvar_ou_atualizar_cliente(request.form)
-        
+        nomes = request.form.getlist('documentos_nomes')
+        arquivos = request.files.getlist('documentos_arquivos')
+        for nome, file in zip(nomes, arquivos):
+            if file and file.filename.lower().endswith('.pdf'):
+                doc_nome = nome.strip() if nome and nome.strip() else secure_filename(file.filename)
+                doc = DocumentoDigitalizado(
+                    nome=doc_nome,
+                    dados=file.read(),
+                    mimetype=file.mimetype,
+                    veiculo_id=veiculo.id
+                )
+                db.session.add(doc)
+                
         db.session.commit()
-        return redirect(url_for('home.veiculos'))
+        return redirect(url_for('home.veiculo_editar', id=veiculo.id))
         
     return render_template('veiculos/form.html', veiculo=veiculo)
 
@@ -257,6 +286,24 @@ def veiculo_editar(id):
 def veiculo_visualizar(id):
     veiculo = Veiculo.query.get_or_404(id)
     return render_template('veiculos/form.html', veiculo=veiculo, visualizar=True)
+
+@bp.route('/documento/download/<int:doc_id>')
+def download_documento(doc_id):
+    doc = DocumentoDigitalizado.query.get_or_404(doc_id)
+    return send_file(
+        io.BytesIO(doc.dados),
+        mimetype=doc.mimetype,
+        as_attachment=True,
+        download_name=doc.nome
+    )
+
+@bp.route('/documento/excluir/<int:doc_id>')
+def excluir_documento(doc_id):
+    doc = DocumentoDigitalizado.query.get_or_404(doc_id)
+    veiculo_id = doc.veiculo_id
+    db.session.delete(doc)
+    db.session.commit()
+    return redirect(url_for('home.veiculo_editar', id=veiculo_id))
 
 @bp.route('/processos')
 def processos():
